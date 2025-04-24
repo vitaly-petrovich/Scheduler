@@ -24,9 +24,7 @@ int main() {
         producers[i]->start();
     }
 
-    std::thread t2(&Scheduler::run, &scheduler);
-    consumers.insert(consumers.begin(), std::make_unique<Consumer>(data, reporter));
-    t2.join();
+    std::async(&Scheduler::run, &scheduler).wait();
 
     return 0;
 }

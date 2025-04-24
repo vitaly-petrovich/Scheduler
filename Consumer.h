@@ -1,6 +1,6 @@
 #pragma once
 
-#include <thread>
+#include <future>
 
 #include "Data.h"
 #include "Reporter.h"
@@ -30,24 +30,24 @@ public:
 
     void start()
     {
-        if (m_thread)
+        if(m_future.valid())
             return;
 
-        m_thread = std::make_unique<std::thread>(&Consumer::run, this);
+        m_future = std::async(&Consumer::run, this);
     }
 
     void stop()
     {
         m_running = false;
 
-        if (!m_thread || !m_thread->joinable())
+        if (!m_future.valid())
             return;
 
-        m_thread->join();
+        m_future.wait();
     }
 
     Data& m_data;
     Reporter m_reporter;
     std::atomic<bool> m_running{ true };
-    std::unique_ptr<std::thread> m_thread;
+    std::shared_future<void> m_future;
 };
