@@ -2,14 +2,13 @@
 
 #include <string>
 #include <iostream>
-#include <mutex>
+#include <syncstream>
 
 class Reporter
 {
 public:
     void report(const std::string& data)
     {
-        std::string out(data + "\n");
-        std::cout << out;
+        std::osyncstream(std::cout) << data << std::endl;
     }
 };
